@@ -9,10 +9,14 @@ const token = actions.getInput("token", { required: false });
 
 const cacheName = slugify.default(`${endpoint}-${cache}`);
 
-const nix = async (description: string, args: readonly string[]) => {
+const nix = async (
+	description: string,
+	args: readonly string[],
+	stdout = false,
+) => {
 	actions.info(description);
 	actions.debug(`nix ${args.join(" ")}`);
-	await execa(
+	const result = await execa(
 		"nix",
 		[
 			"--experimental-features",
@@ -23,19 +27,31 @@ const nix = async (description: string, args: readonly string[]) => {
 			"cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= attic:iSJ9/8whtGsJxS8vVYdwOICWRwnjFKkzf8TAWe82d0E=",
 			...args,
 		],
-		{ stdout: "inherit", stderr: "inherit", stdin: "inherit" },
+		{
+			stdout: stdout ? "pipe" : "inherit",
+			stderr: "inherit",
+			stdin: "inherit",
+		},
 	);
 	actions.debug(`done`);
+	return result;
 };
 
 await nix("fetch flake", ["flake", "prefetch", "github:YoloDev/actions-attic"]);
-await nix("install attic", [
-	"build",
-	"github:YoloDev/actions-attic#attic",
-	"--no-link",
-	"--print-out-paths",
-	"--verbose",
-]);
+const attic = (
+	await nix(
+		"install attic",
+		[
+			"build",
+			"github:YoloDev/actions-attic#attic",
+			"--no-link",
+			"--print-out-paths",
+		],
+		true,
+	)
+).stdout.trim();
+
+actions.info(`attic installed at: ${attic}`);
 // await execa(
 // 	"nix",
 // 	[

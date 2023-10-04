@@ -3534,10 +3534,10 @@ const endpoint = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("server", {
 const cache = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("cache", { required: true });
 const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("token", { required: false });
 const cacheName = slugify__WEBPACK_IMPORTED_MODULE_2___default()["default"](`${endpoint}-${cache}`);
-const nix = async (description, args) => {
+const nix = async (description, args, stdout = false) => {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(description);
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(`nix ${args.join(" ")}`);
-    await (0,execa__WEBPACK_IMPORTED_MODULE_1__/* .execa */ .r)("nix", [
+    const result = await (0,execa__WEBPACK_IMPORTED_MODULE_1__/* .execa */ .r)("nix", [
         "--experimental-features",
         "nix-command flakes",
         "--substituters",
@@ -3545,17 +3545,22 @@ const nix = async (description, args) => {
         "--trusted-public-keys",
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= attic:iSJ9/8whtGsJxS8vVYdwOICWRwnjFKkzf8TAWe82d0E=",
         ...args,
-    ], { stdout: "inherit", stderr: "inherit", stdin: "inherit" });
+    ], {
+        stdout: stdout ? "pipe" : "inherit",
+        stderr: "inherit",
+        stdin: "inherit",
+    });
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(`done`);
+    return result;
 };
 await nix("fetch flake", ["flake", "prefetch", "github:YoloDev/actions-attic"]);
-await nix("install attic", [
+const attic = (await nix("install attic", [
     "build",
     "github:YoloDev/actions-attic#attic",
     "--no-link",
     "--print-out-paths",
-    "--verbose",
-]);
+], true)).stdout.trim();
+_actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`attic installed at: ${attic}`);
 // await execa(
 // 	"nix",
 // 	[

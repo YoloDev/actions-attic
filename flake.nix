@@ -70,8 +70,6 @@
               attic-client
               nodejs
               git
-              gh
-              act
             ];
           };
         });

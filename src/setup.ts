@@ -1,22 +1,32 @@
 import * as actions from "@actions/core";
-import { execa } from "execa";
+import * as exec from "@actions/exec";
 import slugify from "slugify";
 
-const readOnly = actions.getInput("read-only") === "true";
+const readOnly = actions.getBooleanInput("read-only");
 const endpoint = actions.getInput("server", { required: true });
 const cache = actions.getInput("cache", { required: true });
 const token = actions.getInput("token", { required: false });
 
-const cacheName = slugify.default(`${endpoint}-${cache}`);
+const endpointName = slugify.default(endpoint, { lower: true });
 
 const nix = async (
 	description: string,
 	args: readonly string[],
-	stdout = false,
+	returnOutput = false,
 ) => {
-	actions.info(description);
+	actions.startGroup(description);
 	actions.debug(`nix ${args.join(" ")}`);
-	const result = await execa(
+
+	let stdout = "";
+	const listeners = returnOutput
+		? {
+				stdout: (data: Buffer) => {
+					stdout += data.toString();
+				},
+		  }
+		: void 0;
+
+	await exec.exec(
 		"nix",
 		[
 			"--experimental-features",
@@ -27,47 +37,42 @@ const nix = async (
 			"cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= attic:iSJ9/8whtGsJxS8vVYdwOICWRwnjFKkzf8TAWe82d0E=",
 			...args,
 		],
-		{
-			stdout: stdout ? "pipe" : "inherit",
-			stderr: "inherit",
-			stdin: "inherit",
-		},
+		{ listeners },
 	);
 	actions.debug(`done`);
-	return result;
+	actions.endGroup();
+	return stdout;
 };
 
 await nix("fetch flake", ["flake", "prefetch", "github:YoloDev/actions-attic"]);
-const attic = (
-	await nix(
-		"install attic",
-		[
-			"build",
-			"github:YoloDev/actions-attic#attic",
-			"--no-link",
-			"--print-out-paths",
-		],
-		true,
-	)
-).stdout.trim();
 
+const buildResult = await nix(
+	"install attic",
+	[
+		"build",
+		"github:YoloDev/actions-attic#attic",
+		"--no-link",
+		"--print-out-paths",
+	],
+	true,
+);
+
+const atticDir = buildResult.trim();
+actions.addPath(`${atticDir}/bin`);
+
+const attic = `${atticDir}/bin/attic`;
 actions.info(`attic installed at: ${attic}`);
-// await execa(
-// 	"nix",
-// 	[
-// 		"--experimental-features",
-// 		"nix-command flakes",
-// 		"--substituters",
-// 		"https://cache.nixos.org https://nix-community.cachix.org https://attic.alxandr.me/attic",
-// 		"--trusted-public-keys",
-// 		"cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= attic:iSJ9/8whtGsJxS8vVYdwOICWRwnjFKkzf8TAWe82d0E=",
-// 		"run",
-// 		"github:YoloDev/actions-attic#attic",
-// 		"--",
-// 		"login",
-// 		cacheName,
-// 		endpoint,
-// 		token,
-// 	].filter(Boolean),
-// 	{ stdout: "inherit", stderr: "inherit", stdin: "inherit" },
-// );
+
+actions.startGroup(`configure remote ${endpointName}`);
+await exec.exec(
+	attic,
+	["login", endpointName, endpoint, token].filter(Boolean),
+);
+
+await exec.exec(attic, ["cache", "info", `${endpointName}:${cache}`]);
+actions.endGroup();
+
+actions.setOutput("endpointName", endpointName);
+actions.setOutput("cache", `${endpointName}:${cache}`);
+
+// TODO: Spawn watcher

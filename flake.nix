@@ -38,7 +38,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, attic, flake-utils }:
+  outputs = inputs@{ self, nixpkgs, attic, flake-utils }:
     flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" ]
       (system:
         let
@@ -49,25 +49,27 @@
             inherit system;
             overlays = [
               node_version_overlay
-              attic.overlays.default
+              inputs.attic.overlays.default
             ];
           };
+
+          inherit (pkgs) attic;
         in
         {
           packages = {
-            attic = pkgs.attic-client;
+            inherit attic;
           };
 
           apps = {
             attic = {
               type = "app";
-              program = "${pkgs.attic-client}/bin/attic";
+              program = "${attic}/bin/attic";
             };
           };
 
           devShells.default = pkgs.mkShell {
             buildInputs = with pkgs; [
-              attic-client
+              attic
               nodejs
               git
             ];

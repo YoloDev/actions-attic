@@ -4011,7 +4011,7 @@ const readOnly = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput("rea
 const endpoint = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("server", { required: true });
 const cache = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("cache", { required: true });
 const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("token", { required: false });
-const endpointName = slugify__WEBPACK_IMPORTED_MODULE_2___default()["default"](endpoint, { lower: true });
+const endpointName = slugify__WEBPACK_IMPORTED_MODULE_2___default()["default"](endpoint.replace(/^https?:\/\//i, "").replace(/\.|\/|:/g, "-"), { lower: true });
 const nix = async (description, args, returnOutput = false) => {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup(description);
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(`nix ${args.join(" ")}`);

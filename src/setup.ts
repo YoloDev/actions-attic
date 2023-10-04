@@ -7,7 +7,10 @@ const endpoint = actions.getInput("server", { required: true });
 const cache = actions.getInput("cache", { required: true });
 const token = actions.getInput("token", { required: false });
 
-const endpointName = slugify.default(endpoint, { lower: true });
+const endpointName = slugify.default(
+	endpoint.replace(/^https?:\/\//i, "").replace(/\.|\/|:/g, "-"),
+	{ lower: true },
+);
 
 const nix = async (
 	description: string,

@@ -2,7 +2,7 @@ import * as actions from "@actions/core";
 import * as exec from "@actions/exec";
 import slugify from "slugify";
 
-const readOnly = actions.getBooleanInput("read-only");
+// const readOnly = actions.getBooleanInput("read-only");
 const endpoint = actions.getInput("server", { required: true });
 const cache = actions.getInput("cache", { required: true });
 const token = actions.getInput("token", { required: false });
@@ -11,6 +11,8 @@ const endpointName = slugify.default(
 	endpoint.replace(/^https?:\/\//i, "").replace(/\.|\/|:/g, "-"),
 	{ lower: true },
 );
+
+const cacheName = `${endpointName}:${cache}`;
 
 const nix = async (
 	description: string,
@@ -72,10 +74,12 @@ await exec.exec(
 	["login", endpointName, endpoint, token].filter(Boolean),
 );
 
-await exec.exec(attic, ["cache", "info", `${endpointName}:${cache}`]);
+await exec.exec(attic, ["cache", "info", cacheName]);
 actions.endGroup();
 
+await exec.exec(attic, ["use", cacheName]);
+
 actions.setOutput("endpointName", endpointName);
-actions.setOutput("cache", `${endpointName}:${cache}`);
+actions.setOutput("cache", cacheName);
 
 // TODO: Spawn watcher

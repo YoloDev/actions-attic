@@ -35,8 +35,6 @@ jobs:
     needs: []
     steps:
       - uses: actions/checkout@v4
-        # with:
-        #   path: actions-attic
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v4
@@ -45,3 +43,7 @@ jobs:
         with:
           server: https://attic.alxandr.me/
           cache: attic
+          token: ${{ secrets.ATTIC_TOKEN }}
+
+      - name: Build
+        run: nix build .#attic

@@ -4007,11 +4007,12 @@ __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 
 
 
-const readOnly = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput("read-only");
+// const readOnly = actions.getBooleanInput("read-only");
 const endpoint = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("server", { required: true });
 const cache = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("cache", { required: true });
 const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("token", { required: false });
 const endpointName = slugify__WEBPACK_IMPORTED_MODULE_2___default()["default"](endpoint.replace(/^https?:\/\//i, "").replace(/\.|\/|:/g, "-"), { lower: true });
+const cacheName = `${endpointName}:${cache}`;
 const nix = async (description, args, returnOutput = false) => {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup(description);
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(`nix ${args.join(" ")}`);
@@ -4049,10 +4050,11 @@ const attic = `${atticDir}/bin/attic`;
 _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`attic installed at: ${attic}`);
 _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup(`configure remote ${endpointName}`);
 await _actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec(attic, ["login", endpointName, endpoint, token].filter(Boolean));
-await _actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec(attic, ["cache", "info", `${endpointName}:${cache}`]);
+await _actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec(attic, ["cache", "info", cacheName]);
 _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
+await _actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec(attic, ["use", cacheName]);
 _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("endpointName", endpointName);
-_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("cache", `${endpointName}:${cache}`);
+_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("cache", cacheName);
 // TODO: Spawn watcher
 
 __webpack_async_result__();

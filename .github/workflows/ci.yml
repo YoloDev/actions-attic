@@ -40,10 +40,14 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@v4
 
       - uses: ./
+        id: attic
         with:
           server: https://attic.alxandr.me/
           cache: attic
           token: ${{ secrets.ATTIC_TOKEN }}
 
       - name: Build
-        run: nix build .#attic
+        run: nix build .#attic --accept-flake-config
+
+      - name: Push to attic
+        run: attic push "${{ steps.attic.outputs.cache }}" ./result

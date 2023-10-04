@@ -1,0 +1,22 @@
+name: attic nix cache
+branding:
+  icon: "box"
+  color: "purple"
+description: "Installs and sets up attic nix cache"
+runs:
+  using: "node16"
+  main: "dist/index.js"
+inputs:
+  read-only:
+    description: Only read from the cache, do not push back
+    required: false
+    default: "false"
+  server:
+    description: Attic server
+    required: true
+  cache:
+    description: Attic cache name
+    required: true
+  token:
+    description: Attic token
+    required: false

@@ -3537,8 +3537,7 @@ const cacheName = slugify__WEBPACK_IMPORTED_MODULE_2___default()["default"](`${e
 const nix = async (description, args) => {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(description);
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(`nix ${args.join(" ")}`);
-    await (0,execa__WEBPACK_IMPORTED_MODULE_1__/* .execa */ .r)("sudo", [
-        "nix",
+    await (0,execa__WEBPACK_IMPORTED_MODULE_1__/* .execa */ .r)("nix", [
         "--experimental-features",
         "nix-command flakes",
         "--substituters",

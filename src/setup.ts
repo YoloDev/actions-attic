@@ -13,9 +13,8 @@ const nix = async (description: string, args: readonly string[]) => {
 	actions.info(description);
 	actions.debug(`nix ${args.join(" ")}`);
 	await execa(
-		"sudo",
+		"nix",
 		[
-			"nix",
 			"--experimental-features",
 			"nix-command flakes",
 			"--substituters",

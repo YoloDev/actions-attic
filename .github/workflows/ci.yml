@@ -17,9 +17,6 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v4
-        with:
-          planner: linux
-          init: none
 
       - name: Setup Nix cache
         uses: DeterminateSystems/magic-nix-cache-action@v2
@@ -32,8 +29,6 @@ jobs:
 
       - name: Check flake
         run: nix flake check
-        # skip during local actions testing
-        if: ${{ !env.ACT }}
 
   test:
     runs-on: ubuntu-latest
@@ -45,9 +40,6 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v4
-        with:
-          planner: linux
-          init: none
 
       - uses: ./
         with:

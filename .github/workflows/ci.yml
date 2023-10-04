@@ -51,3 +51,4 @@ jobs:
 
       - name: Push to attic
         run: attic push "${{ steps.attic.outputs.cache }}" ./result
+        if: github.ref == 'refs/heads/main'

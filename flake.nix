@@ -71,6 +71,7 @@
               nodejs
               git
               gh
+              act
             ];
           };
         });

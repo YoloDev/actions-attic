@@ -19,7 +19,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@v5
 
       - name: Setup Nix cache
-        uses: DeterminateSystems/magic-nix-cache-action@v2
+        uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
 
       - name: Check Nix flake Nixpkgs inputs
         uses: DeterminateSystems/flake-checker-action@c69473f65c5db52bfd5542b6766583c43ce175f6 # main

@@ -1,22 +1,48 @@
 name: attic nix cache
 branding:
-  icon: "box"
+  icon: "database"
   color: "purple"
 description: "Installs and sets up attic nix cache"
 runs:
-  using: "node16"
-  main: "dist/index.js"
+  using: "node24"
+  main: "dist/js/main.js"
+  post: "dist/js/post.js"
 inputs:
-  read-only:
-    description: Only read from the cache, do not push back
-    required: false
-    default: "false"
+  # Cache Configuration
   server:
-    description: Attic server
+    description: Attic server URL
     required: true
-  cache:
+  serverName:
+    description: The name to use for the Attic server locally
+    required: false
+  cacheName:
     description: Attic cache name
     required: true
+  extraPullNames:
+    description: "Comma-separated list of additional attic cache names to pull (substitute) from"
+
+  # Authentication
   token:
     description: Attic token
     required: false
+
+  # Push Configuration
+  skipPush:
+    description: "Set to true to only pull from the cache without pushing any build results"
+    default: "false"
+  # useDaemon: # TODO - can we support daemon mode?
+  #   description: "Use Attic daemon mode to push store paths as they're built via post-build hooks. See Push modes in README for more information"
+  #   default: "true"
+  # pathsToPush:
+  #   description: "Whitespace-separated list of specific store paths to push. Leave empty to push all build results"
+  # pushFilter:
+  #   description: "Regular expression to exclude derivations from being pushed, for example \"(-source$|nixpkgs\\.tar\\.gz$)\". Ignored if pathsToPush is set. Warning: paths may still be pushed if they are part of another path's closure."
+
+  # Advanced Options
+  skipAddingSubstituter:
+    description: "Set to true to skip adding the cache as a Nix substituter"
+    default: "false"
+  atticBin:
+    description: "Custom path to the attic binary if not using the default installation"
+  installCommand:
+    description: "Custom command to install attic instead of the default installation method"

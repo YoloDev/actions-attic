@@ -11,6 +11,8 @@
   outputs =
     inputs@{ yoloproj, ... }:
     yoloproj.lib.mkFlake inputs {
+      debug = true;
+
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -24,7 +26,6 @@
           ...
         }:
         {
-          # TODO: Checks
           formatter = pkgs.nixfmt;
 
           devshells.default.packages = [
@@ -33,6 +34,8 @@
             pkgs.act
           ];
 
+          # The build-dist hook generates new files
+          pre-commit.check.enable = false;
           pre-commit.settings.hooks = {
             build-dist = {
               enable = true;

@@ -1,6 +1,6 @@
 {
   "name": "actions-attic",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Attic for GitHub actions",
   "type": "module",
   "scripts": {

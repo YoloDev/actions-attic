@@ -1,22 +1,21 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
+  "configVersion": 1,
   "workspaces": {
     "": {
       "name": "actions-attic",
       "dependencies": {
-        "semver": "latest",
-        "which": "latest",
+        "semver": "^7.7.4",
+        "which": "^6.0.1",
       },
       "devDependencies": {
-        "@actions/core": "latest",
-        "@actions/exec": "latest",
-        "@types/node": "latest",
-        "@types/semver": "latest",
-        "@types/which": "latest",
-        "@vercel/ncc": "latest",
-        "prettier": "latest",
-        "typescript": "latest",
+        "@actions/core": "^3.0.1",
+        "@actions/exec": "^3.0.0",
+        "@types/node": "^25.6.0",
+        "@types/semver": "^7.7.1",
+        "@types/which": "^3.0.4",
+        "prettier": "^3.8.3",
+        "typescript": "^6.0.3",
       },
     },
   },
@@ -34,8 +33,6 @@
     "@types/semver": ["@types/semver@7.7.1", "", {}, "sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA=="],
 
     "@types/which": ["@types/which@3.0.4", "", {}, "sha512-liyfuo/106JdlgSchJzXEQCVArk0CvevqPote8F8HgWgJ3dRCcTHgJIsLDuee0kxk/mhbInzIZk3QWSZJ8R+2w=="],
-
-    "@vercel/ncc": ["@vercel/ncc@0.38.4", "", { "bin": { "ncc": "dist/ncc/cli.js" } }, "sha512-8LwjnlP39s08C08J5NstzriPvW1SP8Zfpp1BvC2sI35kPeZnHfxVkCwu4/+Wodgnd60UtT1n8K8zw+Mp7J9JmQ=="],
 
     "isexe": ["isexe@4.0.0", "", {}, "sha512-FFUtZMpoZ8RqHS3XeXEmHWLA4thH+ZxCv2lOiPIn1Xc7CxrqhWzNSDzD+/chS/zbYezmiwWLdQC09JdQKmthOw=="],
 

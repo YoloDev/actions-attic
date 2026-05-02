@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Enable trace logging
-set -x
+# set -x
 
 attic=$1 atticArgs=${2:--j8} cache=$3 preBuildPathsFile=$4 pushFilter=$5
 

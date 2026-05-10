@@ -2,11 +2,11 @@ import {
   debug,
   setFailed,
   setup
-} from "./main-sw8kd3a5.js";
+} from "./main-1xwkbz70.js";
 
 // src/main.mts
 try {
-  setup();
+  await setup();
   debug("Setup done");
 } catch (error) {
   setFailed(`Action failed with error: ${error}`);

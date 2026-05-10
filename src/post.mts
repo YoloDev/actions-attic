@@ -2,8 +2,9 @@ import * as core from "@actions/core";
 import { upload } from "./attic.mts";
 
 try {
-	upload();
+	await upload();
 	core.debug("Upload done");
 } catch (error) {
-	core.setFailed(`Action failed with error: ${error}`);
+	core.warning(`Post action failed, but not failing build`);
+	core.warning(`Post action failed with error: ${error}`);
 }

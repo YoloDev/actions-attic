@@ -18464,6 +18464,9 @@ function debug2(message) {
 function error(message, properties = {}) {
   issueCommand("error", toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
+function warning(message, properties = {}) {
+  issueCommand("warning", toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+}
 function info(message) {
   process.stdout.write(message + os5.EOL);
 }
@@ -18621,4 +18624,4 @@ async function upload() {
   endGroup();
 }
 
-export { setFailed, debug2 as debug, setup, upload };
+export { setFailed, debug2 as debug, warning, setup, upload };
